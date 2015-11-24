@@ -9,4 +9,12 @@
     <version>1.0.0.1-SNAPSHOT</version>
 
 
+    <dependencies>
+        <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+            <version>3.2.1</version>
+        </dependency>
+    </dependencies>
+
 </project>
