@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * Created by vmunthiu on 11/19/2015.
  */
-class PolicyBuilder {
+public class PolicyBuilder {
     private List<Predicate> exceptionPredicates;
 
     PolicyBuilder(Predicate exceptionPredicate) {
