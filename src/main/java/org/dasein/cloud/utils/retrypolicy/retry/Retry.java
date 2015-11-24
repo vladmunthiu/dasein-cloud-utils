@@ -9,8 +9,8 @@ import java.util.List;
 /**
  * Created by vmunthiu on 11/23/2015.
  */
-public class RetryPolicy {
-    public static void execute(Action action, List<Predicate> exceptionPredicates, RetryPolicyState retryPolicyState) throws Exception{
+public class Retry {
+    public static void execute(Action action, List<Predicate> exceptionPredicates, RetryState retryState) throws Exception{
         while(true) {
             try {
                 action.call();
@@ -19,7 +19,7 @@ public class RetryPolicy {
                 if(!shouldRetry(ex, exceptionPredicates)) {
                     throw ex;
                 }
-                if(!retryPolicyState.canRetry(ex)) {
+                if(!retryState.canRetry(ex)) {
                     throw ex;
                 }
             }

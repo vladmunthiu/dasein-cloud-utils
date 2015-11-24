@@ -9,10 +9,10 @@ import org.dasein.cloud.utils.retrypolicy.actions.Func1;
 /**
  * Created by vmunthiu on 11/19/2015.
  */
-public class Policy {
+public class RetryPolicy {
     private Action1<Action> exceptionPolicy;
 
-    Policy(final Action1<Action> exceptionPolicy) {
+    RetryPolicy(final Action1<Action> exceptionPolicy) {
         if(exceptionPolicy == null)
             throw new IllegalArgumentException("exceptionPolicy argument cannot be null");
 
@@ -36,7 +36,7 @@ public class Policy {
         return (T)result[0];
     }
 
-    public static <T extends Exception> PolicyBuilder handle(final Class<T> exceptionType){
+    public static <T extends Exception> RetryPolicyBuilder handle(final Class<T> exceptionType){
         Predicate exceptionPredicate = new Predicate() {
             @Override
             public boolean evaluate(Object object) {
@@ -44,10 +44,10 @@ public class Policy {
             }
         };
 
-        return new PolicyBuilder(exceptionPredicate);
+        return new RetryPolicyBuilder(exceptionPredicate);
     }
 
-    public static <T extends Exception> PolicyBuilder handle(final Class<T> exceptionType, final Func1<T, Boolean> func ) throws Exception {
+    public static <T extends Exception> RetryPolicyBuilder handle(final Class<T> exceptionType, final Func1<T, Boolean> func ) throws Exception {
         Predicate exceptionPredicate = new Predicate() {
             @Override
             public boolean evaluate(Object object) {
@@ -59,6 +59,6 @@ public class Policy {
             }
         };
 
-        return new PolicyBuilder(exceptionPredicate);
+        return new RetryPolicyBuilder(exceptionPredicate);
     }
 }

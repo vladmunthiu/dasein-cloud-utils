@@ -5,10 +5,10 @@ import java.util.Iterator;
 /**
  * Created by vmunthiu on 11/23/2015.
  */
-public class RetryPolicyStateWithSleep implements RetryPolicyState {
+public class RetryStateWithSleep implements RetryState {
     private Iterator<Long> sleepDurations;
 
-    public RetryPolicyStateWithSleep(Iterable<Long> sleepDurations) {
+    public RetryStateWithSleep(Iterable<Long> sleepDurations) {
         this.sleepDurations = sleepDurations.iterator();
     }
 
