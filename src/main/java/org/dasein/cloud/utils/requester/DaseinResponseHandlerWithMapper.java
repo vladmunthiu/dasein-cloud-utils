@@ -36,9 +36,9 @@ public class DaseinResponseHandlerWithMapper<T, V> implements ResponseHandler<V>
 
     private Class<T> classType;
     private StreamProcessor<T> processor;
-    private DriverToCoreMapper<T,V> mapper;
+    private ObjectMapper<T,V> mapper;
 
-    public DaseinResponseHandlerWithMapper(StreamProcessor<T> processor, DriverToCoreMapper<T, V> mapper, Class<T> classType) {
+    public DaseinResponseHandlerWithMapper(StreamProcessor<T> processor, ObjectMapper<T, V> mapper, Class<T> classType) {
         this.processor = processor;
         this.mapper = mapper;
         this.classType = classType;

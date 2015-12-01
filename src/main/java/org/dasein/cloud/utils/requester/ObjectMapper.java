@@ -28,7 +28,7 @@ package org.dasein.cloud.utils.requester;
  * @param <V> core model type
  * */
 
- public interface DriverToCoreMapper<T, V> {
+ public interface ObjectMapper<T, V> {
     V mapFrom(T entity);
 }
 

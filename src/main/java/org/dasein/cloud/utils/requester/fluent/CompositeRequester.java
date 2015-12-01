@@ -21,7 +21,7 @@ package org.dasein.cloud.utils.requester.fluent;
 
 import org.dasein.cloud.utils.requester.DaseinRequestException;
 import org.dasein.cloud.utils.requester.DaseinRequestExecutor;
-import org.dasein.cloud.utils.requester.DriverToCoreMapper;
+import org.dasein.cloud.utils.requester.ObjectMapper;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
 
@@ -30,9 +30,9 @@ import org.w3c.dom.Document;
  */
 public interface CompositeRequester extends Requester<String> {
     <T> Requester<T> withXmlProcessor(Class<T> classType);
-    <T, V> Requester<V> withXmlProcessor(DriverToCoreMapper<T, V> mapper, Class<T> classType);
+    <T, V> Requester<V> withXmlProcessor(ObjectMapper<T, V> mapper, Class<T> classType);
     <T> Requester<T> withJsonProcessor(Class<T> classType);
-    <T, V> Requester<V> withJsonProcessor(DriverToCoreMapper<T, V> mapper, Class<T> classType);
+    <T, V> Requester<V> withJsonProcessor(ObjectMapper<T, V> mapper, Class<T> classType);
     <T> DaseinRequestExecutor<Document> withDocumentProcessor();
     <T> DaseinRequestExecutor<JSONObject> withJSONObjectProcessor();
     String execute() throws DaseinRequestException;

@@ -40,8 +40,8 @@ import java.util.List;
  *
  *      //...add HttpUriRequests to the list...
  *
- *      List&lt;String&gt; results = new DaseinParallelRequest(cloudProvider, httpClientBuilder, requestList).execute();
- *      List&lt;Document&gt; resultsAsDocument = new DaseinParallelRequest(cloudProvider, httpClientBuilder, requestList).withDocumentProcessor().execute();
+ *      List&lt;String&gt; results = new DaseinParallelRequest(httpClientBuilder, requestList).execute();
+ *      List&lt;Document&gt; resultsAsDocument = new DaseinParallelRequest(httpClientBuilder, requestList).withDocumentProcessor().execute();
  * </code>
  * </pre>
  *
@@ -84,7 +84,7 @@ public class DaseinParallelRequest implements CompositeParallelRequester {
      * Constructs a instance of a DaseinParallelRequestExecutor with a XML stream processor that, once the HTTP requests have been
      * finished, will perform a deserialization of the XML responses into the specified type T and return all results as a List of T.
      * <pre>
-     *     List&lt;DaseinDriverType&gt; results = new DaseinParallelRequest(cloudProvider, httpClientBuilder, httpUriRequests).withXmlProcessor(DaseinDriverType.class).execute();
+     *     List&lt;DaseinDriverType&gt; results = new DaseinParallelRequest(httpClientBuilder, httpUriRequests).withXmlProcessor(DaseinDriverType.class).execute();
      * </pre>
      * @param classType the type of the expected model
      * @return a list of instances of the classType type representing the responses XML
@@ -106,12 +106,12 @@ public class DaseinParallelRequest implements CompositeParallelRequester {
     /**
      * Constructs a instance of a DaseinParallelRequestExecutor with a XML stream processor that, once the HTTP requests have been
      * finished, will perform a deserialization of the XML responses into the specified type T and return all results as a List of T.
-     * A valid instance of a DriverToCoreMapper should be passed in, so that a mapping from a driver model type ( T ) to a Dasein Core
+     * A valid instance of a ObjectMapper should be passed in, so that a mapping from a driver model type ( T ) to a Dasein Core
      * model( V ) to be performed after the response is received.
      *
      * <pre>
-     *     List&lt;DaseinCoreType&gt; results = new DaseinParallelRequest(cloudProvider, httpClientBuilder, httpUriRequests)
-     *                  .withXmlProcessor(new DriverToCoreMapper&lt;DaseinDriverType, DaseinCoreType&gt;() {
+     *     List&lt;DaseinCoreType&gt; results = new DaseinParallelRequest(httpClientBuilder, httpUriRequests)
+     *                  .withXmlProcessor(new ObjectMapper&lt;DaseinDriverType, DaseinCoreType&gt;() {
      *                           &#64;Override
      *                           public DaseinCoreType mapFrom(DaseinDriverType entity) {
      *                                  //map entity to a new instance of DaseinCoreType
@@ -119,12 +119,12 @@ public class DaseinParallelRequest implements CompositeParallelRequester {
      *                      DaseinDriverType.class).execute();
      * </pre>
      *
-     * @param mapper an implementation of {@link DriverToCoreMapper} interface
+     * @param mapper an implementation of {@link org.dasein.cloud.utils.requester.ObjectMapper} interface
      * @param classType the type of the expected model
      * @return an instance of the V type which should be a Dasien Core type.
      **/
     @Override
-    public <T, V> ParallelRequester<V> withXmlProcessor(@Nonnull DriverToCoreMapper<T, V> mapper, @Nonnull Class<T> classType) {
+    public <T, V> ParallelRequester<V> withXmlProcessor(@Nonnull ObjectMapper<T, V> mapper, @Nonnull Class<T> classType) {
         if(mapper == null)
             throw new IllegalArgumentException("Parameter mapper cannot be null");
 
@@ -145,7 +145,7 @@ public class DaseinParallelRequest implements CompositeParallelRequester {
      * finished, will perform a deserialization of the JSON responses into the specified type T and return all results as a List of T.
      *
      * <pre>
-     *     List&lt;DaseinDriverType&gt; results = new DaseinParallelRequest(cloudProvider, httpClientBuilder, httpUriRequests).withJsonProcessor(DaseinDriverType.class).execute();
+     *     List&lt;DaseinDriverType&gt; results = new DaseinParallelRequest(httpClientBuilder, httpUriRequests).withJsonProcessor(DaseinDriverType.class).execute();
      * </pre>
      *
      * @param classType the type of the expected model
@@ -168,12 +168,12 @@ public class DaseinParallelRequest implements CompositeParallelRequester {
     /**
      * Constructs a instance of a DaseinParallelRequestExecutor with a JSON stream processor that, once the HTTP requests have been
      * finished, will perform a deserialization of the JSON responses into the specified type T and return all results as a List of T.
-     * A valid instance of a DriverToCoreMapper should be passed in, so that a mapping from a driver model type ( T ) to a Dasein Core
+     * A valid instance of a ObjectMapper should be passed in, so that a mapping from a driver model type ( T ) to a Dasein Core
      * model( V ) to be performed after the response is received.
      *
      * <pre>
-     *     List&lt;DaseinCoreType&gt; results = new DaseinParallelRequest(cloudProvider, httpClientBuilder, httpUriRequests)
-     *                  .withJsonProcessor(new DriverToCoreMapper&lt;DaseinDriverType, DaseinCoreType&gt;() {
+     *     List&lt;DaseinCoreType&gt; results = new DaseinParallelRequest(httpClientBuilder, httpUriRequests)
+     *                  .withJsonProcessor(new ObjectMapper&lt;DaseinDriverType, DaseinCoreType&gt;() {
      *                           &#64;Override
      *                           public DaseinCoreType mapFrom(DaseinDriverType entity) {
      *                                  //map entity to a new instance of DaseinCoreType
@@ -181,12 +181,12 @@ public class DaseinParallelRequest implements CompositeParallelRequester {
      *                      DaseinDriverType.class).execute();
      * </pre>
      *
-     * @param mapper an implementation of {@link DriverToCoreMapper} interface
+     * @param mapper an implementation of {@link org.dasein.cloud.utils.requester.ObjectMapper} interface
      * @param classType the type of the expected model
      * @return an instance of the V type which should be a Dasien Core type.
      **/
     @Override
-    public <T, V> ParallelRequester<V> withJsonProcessor(@Nonnull DriverToCoreMapper<T, V> mapper, @Nonnull Class<T> classType) {
+    public <T, V> ParallelRequester<V> withJsonProcessor(@Nonnull ObjectMapper<T, V> mapper, @Nonnull Class<T> classType) {
         if(mapper == null)
             throw new IllegalArgumentException("Parameter mapper cannot be null");
 
@@ -207,7 +207,7 @@ public class DaseinParallelRequest implements CompositeParallelRequester {
      * finished, will try to parse the response stream into a valid XML Document object and return all results as a List of Document objects.
      *
      * <pre>
-     *     List&lt;Document&gt; documentResults = new DaseinParallelRequest(cloudProvider, httpClientBuilder, httpUriRequests).withDocumentProcessor().execute();
+     *     List&lt;Document&gt; documentResults = new DaseinParallelRequest(httpClientBuilder, httpUriRequests).withDocumentProcessor().execute();
      * </pre>
      **/
     @Override
@@ -226,7 +226,7 @@ public class DaseinParallelRequest implements CompositeParallelRequester {
      * finished, will try to parse the response stream into a valid JSONObject object and return all results as a List of JSONObject objects.
      *
      * <pre>
-     *     List&lt;JSONObject&gt; jsonResults = new DaseinParallelRequest(cloudProvider, httpClientBuilder, httpUriRequests).withJSONObjectProcessor().execute();
+     *     List&lt;JSONObject&gt; jsonResults = new DaseinParallelRequest(httpClientBuilder, httpUriRequests).withJSONObjectProcessor().execute();
      * </pre>
      **/
     @Override
@@ -244,7 +244,7 @@ public class DaseinParallelRequest implements CompositeParallelRequester {
      * Executes a HTTP requests using a string processor for the response.
      *
      * <pre>
-     *     List&lt;String&gt; results = new DaseinRequest(cloudProvider, httpClientBuilder, httpUriRequests).execute();
+     *     List&lt;String&gt; results = new DaseinRequest(httpClientBuilder, httpUriRequests).execute();
      * </pre>
      *
      * @return a string representing the response of the current HTTP call.
