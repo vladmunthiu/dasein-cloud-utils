@@ -19,28 +19,32 @@
 
 package org.dasein.cloud.utils.requester.streamprocessors;
 
+import org.dasein.cloud.utils.requester.streamprocessors.exceptions.StreamReadException;
+import org.dasein.cloud.utils.requester.streamprocessors.exceptions.StreamWriteException;
+
 import javax.annotation.Nullable;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.lang.reflect.ParameterizedType;
 
- /**
+/**
  * @author Vlad Munthiu
  */
-public class XmlStreamToObjectProcessor<T> implements StreamProcessor<T> {
-    public @Nullable T read(InputStream inputStream, Class<T> classType){
+public class XmlStreamToObjectProcessor<T> extends StreamProcessor<T> {
+    public @Nullable T read(InputStream inputStream, Class<T> classType) throws StreamReadException {
         try {
             JAXBContext context = JAXBContext.newInstance(classType);
             Unmarshaller u = context.createUnmarshaller();
             return (T)u.unmarshal(inputStream);
         } catch (Exception ex) {
-            throw new RuntimeException("Error deserializing response input stream into dasein object", ex);
+            throw new StreamReadException("Error deserializing input stream into object", tryGetString(inputStream), ((ParameterizedType)classType.getClass().getGenericSuperclass()).getActualTypeArguments()[0]);
         }
     }
 
-    public @Nullable String write(T object) {
+    public @Nullable String write(T object) throws StreamWriteException {
         try {
             StringWriter stringWriter = new StringWriter();
             JAXBContext jc = JAXBContext.newInstance(object.getClass());
@@ -50,7 +54,7 @@ public class XmlStreamToObjectProcessor<T> implements StreamProcessor<T> {
             return stringWriter.toString();
         }
         catch (Exception ex){
-            throw new RuntimeException("Error serializing dasein object into string", ex);
+            throw new StreamWriteException("Error serializing object into string", object, ex);
         }
     }
 }

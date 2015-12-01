@@ -21,6 +21,7 @@ package org.dasein.cloud.utils.requester.entities;
 
 import org.apache.http.entity.AbstractHttpEntity;
 import org.dasein.cloud.utils.requester.streamprocessors.StreamProcessor;
+import org.dasein.cloud.utils.requester.streamprocessors.exceptions.StreamWriteException;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -34,7 +35,7 @@ public abstract class DaseinEntity<T> extends AbstractHttpEntity implements Clon
     protected final byte[] content;
     protected final int length;
 
-    protected DaseinEntity(T object, StreamProcessor<T> processor){
+    protected DaseinEntity(T object, StreamProcessor<T> processor) throws StreamWriteException {
         final String stringToWrite = processor.write(object);
         content = stringToWrite.getBytes();
         length = content.length;

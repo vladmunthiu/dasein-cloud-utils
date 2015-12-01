@@ -19,8 +19,8 @@
 
 package org.dasein.cloud.utils.requester.fluent;
 
-import org.dasein.cloud.utils.requester.CloudException;
 import org.dasein.cloud.utils.requester.DaseinParallelRequestExecutor;
+import org.dasein.cloud.utils.requester.DaseinRequestException;
 import org.dasein.cloud.utils.requester.DriverToCoreMapper;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
@@ -37,5 +37,5 @@ public interface CompositeParallelRequester extends ParallelRequester<String> {
     <T, V> ParallelRequester<V> withJsonProcessor(DriverToCoreMapper<T, V> mapper, Class<T> classType);
     <T> DaseinParallelRequestExecutor<Document> withDocumentProcessor();
     <T> DaseinParallelRequestExecutor<JSONObject> withJSONObjectProcessor();
-    List<String> execute() throws CloudException;
+    List<String> execute() throws DaseinRequestException;
 }

@@ -19,11 +19,12 @@
 
 package org.dasein.cloud.utils.requester.fluent;
 
-import org.dasein.cloud.utils.requester.CloudException;
+
+import org.dasein.cloud.utils.requester.DaseinRequestException;
 
 /**
  * @author Vlad Munthiu
  */
 public interface Requester<T>{
-    T execute() throws CloudException;
+    T execute() throws DaseinRequestException;
 }

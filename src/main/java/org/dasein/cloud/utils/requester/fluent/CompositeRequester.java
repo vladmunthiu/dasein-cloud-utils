@@ -19,7 +19,7 @@
 
 package org.dasein.cloud.utils.requester.fluent;
 
-import org.dasein.cloud.utils.requester.CloudException;
+import org.dasein.cloud.utils.requester.DaseinRequestException;
 import org.dasein.cloud.utils.requester.DaseinRequestExecutor;
 import org.dasein.cloud.utils.requester.DriverToCoreMapper;
 import org.json.JSONObject;
@@ -35,5 +35,5 @@ public interface CompositeRequester extends Requester<String> {
     <T, V> Requester<V> withJsonProcessor(DriverToCoreMapper<T, V> mapper, Class<T> classType);
     <T> DaseinRequestExecutor<Document> withDocumentProcessor();
     <T> DaseinRequestExecutor<JSONObject> withJSONObjectProcessor();
-    String execute() throws CloudException;
+    String execute() throws DaseinRequestException;
 }

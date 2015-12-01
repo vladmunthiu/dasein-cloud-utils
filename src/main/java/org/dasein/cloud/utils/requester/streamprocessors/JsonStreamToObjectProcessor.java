@@ -20,29 +20,32 @@
 package org.dasein.cloud.utils.requester.streamprocessors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.dasein.cloud.utils.requester.streamprocessors.exceptions.StreamReadException;
+import org.dasein.cloud.utils.requester.streamprocessors.exceptions.StreamWriteException;
 
 import javax.annotation.Nullable;
 import java.io.InputStream;
+import java.lang.reflect.ParameterizedType;
 
- /**
+/**
  * @author Vlad Munthiu
  */
-public class JsonStreamToObjectProcessor<T> implements StreamProcessor<T> {
-    public @Nullable T read(InputStream inputStream, Class<T> classType){
+public class JsonStreamToObjectProcessor<T> extends StreamProcessor<T> {
+    public @Nullable T read(InputStream inputStream, Class<T> classType) throws StreamReadException {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             return objectMapper.readValue(inputStream, classType);
         } catch (Exception ex) {
-            throw new RuntimeException("Error deserializing response input stream into dasein object", ex);
+            throw new StreamReadException("Error deserializing input stream into object", tryGetString(inputStream), ((ParameterizedType)classType.getClass().getGenericSuperclass()).getActualTypeArguments()[0]);
         }
     }
 
-    public @Nullable String write(T object){
+    public @Nullable String write(T object) throws StreamWriteException {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             return objectMapper.writeValueAsString(object);
         } catch (Exception ex) {
-            throw new RuntimeException("Error serializing dasein object into string", ex);
+            throw new StreamWriteException("Error serializing object into string", object, ex);
         }
     }
 }

@@ -19,7 +19,7 @@
 
 package org.dasein.cloud.utils.requester.fluent;
 
-import org.dasein.cloud.utils.requester.CloudException;
+import org.dasein.cloud.utils.requester.DaseinRequestException;
 
 import java.util.List;
 
@@ -27,5 +27,5 @@ import java.util.List;
  * Created by vmunthiu on 6/17/2015.
  */
 public interface ParallelRequester<T> {
-    List<T> execute() throws CloudException;
+    List<T> execute() throws DaseinRequestException;
 }

@@ -20,22 +20,28 @@
 package org.dasein.cloud.utils.requester.streamprocessors;
 
 import org.apache.commons.io.IOUtils;
+import org.dasein.cloud.utils.requester.streamprocessors.exceptions.StreamReadException;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.lang.reflect.ParameterizedType;
 
- /**
+/**
  * @author Vlad Munthiu
  */
-public class StreamToStringProcessor implements StreamProcessor<String> {
+public class StreamToStringProcessor extends StreamProcessor<String> {
     @Nullable
     @Override
-    public String read(InputStream inputStream, Class<String> classType) throws IOException {
-        StringWriter stringWriter = new StringWriter();
-        IOUtils.copy(inputStream, stringWriter);
-        return stringWriter.toString();
+    public String read(InputStream inputStream, Class<String> classType) throws StreamReadException {
+        try {
+            StringWriter stringWriter = new StringWriter();
+            IOUtils.copy(inputStream, stringWriter);
+            return stringWriter.toString();
+        } catch (IOException ex) {
+            throw new StreamReadException("Error deserializing input stream into object", tryGetString(inputStream), ((ParameterizedType)classType.getClass().getGenericSuperclass()).getActualTypeArguments()[0]);
+        }
     }
 
     @Nullable

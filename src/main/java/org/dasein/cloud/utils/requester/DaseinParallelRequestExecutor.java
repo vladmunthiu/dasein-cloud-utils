@@ -48,7 +48,7 @@ public class DaseinParallelRequestExecutor<T> extends AbstractDaseinRequestExecu
         this.httpUriRequests = httpUriRequests;
     }
 
-    public List<T> execute() throws CloudException {
+    public List<T> execute() throws DaseinRequestException {
         final HttpClientBuilder clientBuilder = setProxyIfRequired(httpClientBuilder);
 
         final CloseableHttpClient httpClient = clientBuilder.build();
@@ -77,7 +77,7 @@ public class DaseinParallelRequestExecutor<T> extends AbstractDaseinRequestExecu
                 httpClient.close();
             }
         } catch (Exception e) {
-            throw new CloudException(e.getMessage());
+            throw new DaseinRequestException(e.getMessage(), e);
         }
     }
 }

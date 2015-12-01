@@ -30,7 +30,6 @@ import org.apache.http.impl.conn.DefaultProxyRoutePlanner;
  * Created by vmunthiu on 6/17/2015.
  */
 public abstract class AbstractDaseinRequestExecutor<T> {
-//    protected CloudProvider provider;
     protected HttpClientBuilder httpClientBuilder;
     private ResponseHandler<T> responseHandler;
     private HttpProxyConfig httpProxyConfig;
@@ -46,7 +45,7 @@ public abstract class AbstractDaseinRequestExecutor<T> {
         this.responseHandler = responseHandler;
     }
 
-    protected T execute(HttpUriRequest httpUriRequest) throws CloudException {
+    protected T execute(HttpUriRequest httpUriRequest) throws DaseinRequestException {
         httpClientBuilder = setProxyIfRequired(httpClientBuilder);
 
         try {
@@ -58,24 +57,15 @@ public abstract class AbstractDaseinRequestExecutor<T> {
                 httpClient.close();
             }
         } catch (Exception e){
-            throw translateException(e);
+            throw new DaseinRequestException(e.getMessage(), e);
         }
     }
 
-    protected T execute(CloseableHttpClient httpClient, HttpUriRequest httpUriRequest) throws CloudException {
+    protected T execute(CloseableHttpClient httpClient, HttpUriRequest httpUriRequest) throws DaseinRequestException {
         try {
             return httpClient.execute(httpUriRequest, this.responseHandler);
-        } catch (Exception e) {
-            throw translateException(e);
-        }
-    }
-
-    protected CloudException translateException(Exception exception) {
-        if(exception instanceof  CloudResponseException) {
-            CloudResponseException e = (CloudResponseException) exception;
-            return new CloudException(e.getErrorType(), e.getHttpCode(), e.getProviderCode(), e.getMessage());
-        } else {
-            return new CloudException(exception.getMessage());
+        } catch (Exception e){
+            throw new DaseinRequestException(e.getMessage(), e);
         }
     }
 

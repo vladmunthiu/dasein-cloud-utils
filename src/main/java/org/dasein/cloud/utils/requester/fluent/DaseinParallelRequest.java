@@ -250,7 +250,7 @@ public class DaseinParallelRequest implements CompositeParallelRequester {
      * @return a string representing the response of the current HTTP call.
      **/
     @Override
-    public List<String> execute() throws CloudException {
+    public List<String> execute() throws DaseinRequestException {
         if(httpProxyConfig == null) {
             return new DaseinParallelRequestExecutor<String>(this.httpClientBuilder, this.httpUriRequests,
                     new DaseinResponseHandler<String>(new StreamToStringProcessor(), String.class)).execute();

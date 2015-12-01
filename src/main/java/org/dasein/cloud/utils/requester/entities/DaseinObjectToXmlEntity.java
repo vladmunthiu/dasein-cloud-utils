@@ -20,12 +20,13 @@
 package org.dasein.cloud.utils.requester.entities;
 
 import org.dasein.cloud.utils.requester.streamprocessors.XmlStreamToObjectProcessor;
+import org.dasein.cloud.utils.requester.streamprocessors.exceptions.StreamWriteException;
 
- /**
+/**
  * @author Vlad Munthiu
  */
 public class DaseinObjectToXmlEntity<T> extends DaseinEntity<T> {
-    public DaseinObjectToXmlEntity(T daseinObject){
+    public DaseinObjectToXmlEntity(T daseinObject) throws StreamWriteException {
         super(daseinObject, new XmlStreamToObjectProcessor<T>());
         setContentType("application/xml");
     }

@@ -19,6 +19,8 @@
 
 package org.dasein.cloud.utils.requester.streamprocessors;
 
+import org.dasein.cloud.utils.requester.streamprocessors.exceptions.StreamReadException;
+import org.dasein.cloud.utils.requester.streamprocessors.exceptions.StreamWriteException;
 import org.w3c.dom.Document;
 
 import javax.annotation.Nullable;
@@ -29,32 +31,33 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.lang.reflect.ParameterizedType;
 
- /**
+/**
  * @author Vlad Munthiu
  */
-public class StreamToDocumentProcessor implements StreamProcessor<Document> {
+public class StreamToDocumentProcessor extends StreamProcessor<Document> {
     @Nullable
     @Override
-    public Document read(InputStream inputStream, Class<Document> classType) throws IOException {
+    public Document read(InputStream inputStream, Class<Document> classType) throws StreamReadException {
         try {
-            DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-            return documentBuilder.parse(inputStream);
+            try {
+                DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+                DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+                return documentBuilder.parse(inputStream);
+            } finally {
+                inputStream.close();
+            }
         } catch (Exception e) {
-            throw new IOException(e.getMessage());
-        }
-        finally {
-            inputStream.close();
+            throw new StreamReadException("Error deserializing input stream into object", tryGetString(inputStream), ((ParameterizedType)classType.getClass().getGenericSuperclass()).getActualTypeArguments()[0]);
         }
     }
 
     @Nullable
     @Override
-    public String write(Document document) {
+    public String write(Document document) throws StreamWriteException {
         try {
             StringWriter stringWriter = new StringWriter();
             TransformerFactory tf = TransformerFactory.newInstance();
@@ -68,7 +71,7 @@ public class StreamToDocumentProcessor implements StreamProcessor<Document> {
             return stringWriter.toString();
         }
         catch (Exception ex) {
-            throw new RuntimeException("Error converting XML Document to String", ex);
+            throw new StreamWriteException("Error serializing object into string", document, ex);
         }
     }
 }

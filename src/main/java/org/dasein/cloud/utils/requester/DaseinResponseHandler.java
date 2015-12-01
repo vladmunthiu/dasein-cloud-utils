@@ -22,6 +22,7 @@ package org.dasein.cloud.utils.requester;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.util.EntityUtils;
 import org.dasein.cloud.utils.requester.streamprocessors.StreamProcessor;
@@ -47,8 +48,7 @@ public class DaseinResponseHandler<T> implements ResponseHandler<T> {
                 && httpResponse.getStatusLine().getStatusCode() != HttpStatus.SC_NO_CONTENT
                 && httpResponse.getStatusLine().getStatusCode() != HttpStatus.SC_CREATED
                 && httpResponse.getStatusLine().getStatusCode() != HttpStatus.SC_ACCEPTED ) {
-            throw new CloudResponseException(CloudErrorType.GENERAL, httpResponse.getStatusLine().getStatusCode(),
-                    httpResponse.getStatusLine().getReasonPhrase(), EntityUtils.toString(httpResponse.getEntity()));
+            throw new HttpResponseException(httpResponse.getStatusLine().getStatusCode(), EntityUtils.toString(httpResponse.getEntity()));
         }
         else {
             if(httpResponse.getEntity() == null)

@@ -20,12 +20,13 @@
 package org.dasein.cloud.utils.requester.entities;
 
 import org.dasein.cloud.utils.requester.streamprocessors.JsonStreamToObjectProcessor;
+import org.dasein.cloud.utils.requester.streamprocessors.exceptions.StreamWriteException;
 
- /**
+/**
  * @author Vlad Munthiu
  */
 public class DaseinObjectToJsonEntity <T> extends DaseinEntity<T> {
-    public DaseinObjectToJsonEntity(T daseinObject){
+    public DaseinObjectToJsonEntity(T daseinObject) throws StreamWriteException {
         super(daseinObject, new JsonStreamToObjectProcessor<T>());
         setContentType("application/json");
     }

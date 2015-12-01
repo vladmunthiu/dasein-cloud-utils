@@ -19,14 +19,33 @@
 
 package org.dasein.cloud.utils.requester.streamprocessors;
 
+import org.apache.commons.io.IOUtils;
+import org.dasein.cloud.utils.requester.streamprocessors.exceptions.StreamReadException;
+import org.dasein.cloud.utils.requester.streamprocessors.exceptions.StreamWriteException;
+
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
 
- /**
+/**
  * @author Vlad Munthiu
  */
-public interface StreamProcessor<T> {
-    @Nullable T read(InputStream inputStream, Class<T> classType) throws IOException;
-    @Nullable String write(T object);
+public abstract class StreamProcessor<T> {
+     @Nullable public abstract T read(InputStream inputStream, Class<T> classType) throws StreamReadException;
+     @Nullable public abstract String write(T object) throws StreamWriteException;
+
+     protected String getString(InputStream inputStream) throws IOException {
+         StringWriter stringWriter = new StringWriter();
+         IOUtils.copy(inputStream, stringWriter);
+         return stringWriter.toString();
+     }
+
+     protected String tryGetString(InputStream inputStream) {
+         try {
+             return getString(inputStream);
+         } catch (IOException ex) {
+             return null;
+         }
+     }
 }

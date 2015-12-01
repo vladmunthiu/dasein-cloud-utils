@@ -246,7 +246,7 @@ public class DaseinRequest implements CompositeRequester {
      * @return a string representing the response of the current HTTP call.
     **/
     @Override
-    public String execute() throws CloudException {
+    public String execute() throws DaseinRequestException {
         if(httpProxyConfig == null) {
             return new DaseinRequestExecutor<String>(this.httpClientBuilder, this.httpUriRequestBuilder,
                     new DaseinResponseHandler<String>(new StreamToStringProcessor(), String.class)).execute();

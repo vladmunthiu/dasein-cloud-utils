@@ -20,28 +20,28 @@
 package org.dasein.cloud.utils.requester.streamprocessors;
 
 import org.apache.commons.io.IOUtils;
-import org.json.JSONException;
+import org.dasein.cloud.utils.requester.streamprocessors.exceptions.StreamReadException;
 import org.json.JSONObject;
 
 import javax.annotation.Nullable;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.lang.reflect.ParameterizedType;
 
 /**
  * Created by Vlad_Munthiu on 11/14/2014.
  */
-public class StreamToJSONObjectProcessor implements StreamProcessor<JSONObject> {
+public class StreamToJSONObjectProcessor extends StreamProcessor<JSONObject> {
     @Nullable
     @Override
-    public JSONObject read(InputStream inputStream, Class<JSONObject> classType) throws IOException {
+    public JSONObject read(InputStream inputStream, Class<JSONObject> classType) throws StreamReadException {
         try {
             StringWriter stringWriter = new StringWriter();
             IOUtils.copy(inputStream, stringWriter);
             return new JSONObject(stringWriter.toString());
         }
-        catch (JSONException ex){
-            return null;
+        catch (Exception ex){
+            throw new StreamReadException("Error deserializing input stream into object", tryGetString(inputStream), ((ParameterizedType)classType.getClass().getGenericSuperclass()).getActualTypeArguments()[0]);
         }
     }
 

@@ -41,7 +41,7 @@ public class DaseinRequestExecutor<T> extends AbstractDaseinRequestExecutor<T> i
         this.httpUriRequest = httpUriRequest;
     }
 
-    public T execute() throws CloudException {
+    public T execute() throws DaseinRequestException {
         return execute(this.httpUriRequest);
     }
 }
