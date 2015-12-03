@@ -56,6 +56,10 @@ public class RetryPolicyBuilder {
         return retry(1);
     }
 
+    public RetryPolicy retry(Action onRetryAction) {
+        return retry(1, onRetryAction);
+    }
+
     public RetryPolicy retry(final Integer retryCount) throws IllegalArgumentException {
         if(retryCount <= 0)
             throw new IllegalArgumentException("rertyCount should be a positive integer");
@@ -64,6 +68,18 @@ public class RetryPolicyBuilder {
             @Override
             public void call(Action target) throws Exception {
                 Retry.execute(target, exceptionPredicates, new RetryStateWithCount(retryCount));
+            }
+        });
+    }
+
+    public RetryPolicy retry(final Integer retryCount, final Action onRetryAction) throws IllegalArgumentException {
+        if(retryCount <= 0)
+            throw new IllegalArgumentException("rertyCount should be a positive integer");
+
+        return new RetryPolicy(new Action1<Action>() {
+            @Override
+            public void call(Action target) throws Exception {
+                Retry.execute(target, exceptionPredicates, new RetryStateWithCount(retryCount, onRetryAction));
             }
         });
     }
@@ -80,10 +96,39 @@ public class RetryPolicyBuilder {
         });
     }
 
+    public RetryPolicy retryAndWait(final Iterable<Long> sleepIntervals, final Action onRetryAction) {
+        if(sleepIntervals == null)
+            throw new IllegalArgumentException("sleepIntervals cannot be null");
+
+        return new RetryPolicy(new Action1<Action>() {
+            @Override
+            public void call(Action target) throws Exception {
+                Retry.execute(target, exceptionPredicates, new RetryStateWithSleep(sleepIntervals, onRetryAction));
+            }
+        });
+    }
+
     public RetryPolicy retryForever() {
         final RetryState retryForeverPolicyState = new RetryState() {
             @Override
             public boolean canRetry(Exception ex) {
+                return true;
+            }
+        };
+
+        return new RetryPolicy(new Action1<Action>() {
+            @Override
+            public void call(Action target) throws Exception {
+                Retry.execute(target, exceptionPredicates, retryForeverPolicyState);
+            }
+        });
+    }
+
+    public RetryPolicy retryForever(final Action onRetryAction) {
+        final RetryState retryForeverPolicyState = new RetryState() {
+            @Override
+            public boolean canRetry(Exception ex) throws Exception {
+                onRetryAction.call();
                 return true;
             }
         };
