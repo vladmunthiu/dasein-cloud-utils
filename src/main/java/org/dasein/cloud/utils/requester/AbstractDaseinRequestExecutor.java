@@ -79,6 +79,4 @@ public abstract class AbstractDaseinRequestExecutor<T> {
 
         return httpClientBuilder;
     }
-
-
 }
